@@ -41,10 +41,16 @@ Dar el siguiente paso en Docker: en lugar de usar imágenes existentes, aprender
 Desde la terminal, y ubicados en la carpeta `5-Imagen-Personalizada`, ejecutamos el comando `docker build`.
 
 ```bash
-docker build -t mi-imagen-nginx .
+docker build -t mi-imagen-nginx --load .
 ```
 - `-t mi-imagen-nginx`: `-t` es por "tag" (etiqueta). Le estamos dando a nuestra imagen un nombre legible: `mi-imagen-nginx`.
+- `--load`: En versiones modernas de Docker, esta bandera asegura que la imagen final se cargue en el repositorio local (lo que te permite verla con `docker images` y usarla con `docker run`).
 - `.`: Este punto final es muy importante. Le dice a Docker que el contexto de build (los archivos que puede usar, como `index.html`) es el directorio actual.
+
+**Nota sobre compatibilidad:** Si al ejecutar el comando anterior recibes un error como `unknown flag: --load`, significa que estás usando una versión más antigua de Docker. En ese caso, simplemente ejecuta el comando sin esa bandera:
+```bash
+docker build -t mi-imagen-nginx .
+```
 
 Verás una salida en la terminal que muestra a Docker ejecutando cada paso del `Dockerfile`.
 

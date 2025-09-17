@@ -53,9 +53,14 @@ CMD ["nginx", "-g", "daemon off;"]
 ### 1. Construir la Imagen Multi-Etapa
 Desde la carpeta `8-MultiStage`, ejecuta el comando de build.
 ```bash
+docker build -t mi-react-app --load .
+```
+Docker ejecutará ambas etapas. La etapa `builder` es temporal y se descarta al final, dejando solo la imagen final creada a partir de la segunda etapa. La bandera `--load` asegura que el resultado se cargue en tu repositorio local de imágenes.
+
+**Nota sobre compatibilidad:** Si al ejecutar el comando anterior recibes un error como `unknown flag: --load`, significa que estás usando una versión más antigua de Docker. En ese caso, simplemente ejecuta el comando sin esa bandera:
+```bash
 docker build -t mi-react-app .
 ```
-Docker ejecutará ambas etapas. La etapa `builder` es temporal y se descarta al final, dejando solo la imagen final creada a partir de la segunda etapa.
 
 ### 2. ¡Verificar el Ahorro de Espacio!
 Compara el tamaño de tu nueva imagen con la imagen de Node que usamos para construirla.
