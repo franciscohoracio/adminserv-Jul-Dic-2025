@@ -1,14 +1,12 @@
-version: '3.3'
-
 services:
    db:
-     image: mysql:5.7
+     image: mariadb:latest
      restart: always
      environment:
-       MYSQL_DATABASE: wordpress
-       MYSQL_USER: wordpress
-       MYSQL_PASSWORD: password
-       MYSQL_RANDOM_ROOT_PASSWORD: '1'
+       MARIADB_DATABASE: wordpress
+       MARIADB_USER: wordpress
+       MARIADB_PASSWORD: password
+       MARIADB_RANDOM_ROOT_PASSWORD: '1'
 
    wordpress:
      image: wordpress:latest
