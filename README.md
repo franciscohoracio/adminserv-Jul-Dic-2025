@@ -26,4 +26,4 @@ Antes de comenzar, asegúrate de tener instaladas las siguientes herramientas en
 **[Haz clic aquí para comenzar con las prácticas de docker](./docker-practices/README.md)**
 
 
-**[Haz clic aquí para comenzar con las prácticas de k8s](./k8s-practices/README.md)**s
+**[Haz clic aquí para comenzar con las prácticas de k8s](./k8s-practices/README.md)**
