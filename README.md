@@ -24,4 +24,6 @@ Antes de comenzar, asegúrate de tener instaladas las siguientes herramientas en
 5.  Dentro de esa carpeta, encontrarás un `README.md` que funciona como un índice detallado de todas las prácticas disponibles.
 
 **[Haz clic aquí para comenzar con las prácticas de docker](./docker-practices/README.md)**
-**[Haz clic aquí para comenzar con las prácticas de k8s](./k8s-practices/README.md)**
+
+
+**[Haz clic aquí para comenzar con las prácticas de k8s](./k8s-practices/README.md)**s
