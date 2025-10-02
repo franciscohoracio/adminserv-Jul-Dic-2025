@@ -44,7 +44,7 @@ Familiarizarse con la creación de un clúster de Kubernetes local y el desplieg
 1. **Crear el clúster con mapeo de puertos**:
    Para acceder a los servicios `NodePort` desde tu máquina, es necesario mapear los puertos del nodo de Kind (un contenedor Docker) a tu `localhost`. Para ello, `kind` utiliza un archivo de configuración.
 
-   Asegúrate de tener el archivo `kind-config.yaml` en la raíz del proyecto con el siguiente contenido:
+   Asegúrate de tener el archivo `kind-config.yaml` en la raíz del proyecto con el siguiente contenido para crear un clúster con dos nodos (un nodo de control y un nodo trabajador):
    ```yaml
    kind: Cluster
    apiVersion: kind.x-k8s.io/v1alpha4
@@ -54,19 +54,20 @@ Familiarizarse con la creación de un clúster de Kubernetes local y el desplieg
      - containerPort: 30080
        hostPort: 8080
        protocol: TCP
+   - role: worker
    ```
 
    Ahora, crea el clúster con este archivo:
    ```bash
    kind create cluster --name practicas-k8s --config kind-config.yaml
    ```
-   **Explicación**: `--config` le indica a `kind` que use nuestro archivo. `extraPortMappings` mapea el puerto `8080` de tu máquina (`hostPort`) al puerto `30080` del contenedor que funciona como nodo del clúster (`containerPort`).
+   **Explicación**: `--config` le indica a `kind` que use nuestro archivo. `extraPortMappings` mapea un puerto de tu máquina al nodo `control-plane`. Hemos añadido un segundo nodo con `role: worker` para simular un entorno más realista.
 
 2. **Verificar los nodos**:
    ```bash
    kubectl get nodes
    ```
-   **Explicación**: `kubectl` es la herramienta de línea de comandos para interactuar con Kubernetes. Con `get nodes`, se listan todos los nodos del clúster y se verifica que estén en estado `Ready`.
+   **Explicación**: Con `get nodes`, se listan todos los nodos del clúster. Ahora deberías ver dos nodos: `practicas-k8s-control-plane` y `practicas-k8s-worker`, ambos en estado `Ready`.
 
 3. **Crear el Pod**:
    ```bash
@@ -393,7 +394,11 @@ Aprender a desplegar un Pod en cada nodo del clúster utilizando **DaemonSets**,
    ```
    **Explicación**: Verá un Pod del DaemonSet por cada nodo, asignado a ese nodo específico.
 
-3. **Desafío**: Agregue un nuevo nodo a su clúster de `kind` y observe cómo el DaemonSet despliega automáticamente un nuevo Pod en él.
+3. **Desafío**: Ya que el clúster tiene dos nodos, comprueba el comportamiento del DaemonSet.
+   ```bash
+   kubectl get pods -o wide
+   ```
+   **Explicación**: Observarás que Kubernetes ha desplegado un Pod del DaemonSet en cada uno de los nodos del clúster (`practicas-k8s-control-plane` y `practicas-k8s-worker`), cumpliendo así su propósito.
 
 ---
 
