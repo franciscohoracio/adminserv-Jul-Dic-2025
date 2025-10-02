@@ -344,22 +344,32 @@ Aprender a controlar el flujo de tráfico entre Pods utilizando **NetworkPolicie
 ### Objetivo
 Aprender a escalar automáticamente el número de Pods en un Deployment según la demanda, utilizando el **HorizontalPodAutoscaler (HPA)**.
 
+**Nota:** Para que esta práctica funcione, es necesario instalar el `metrics-server` en el clúster. Este componente recopila métricas de uso de recursos (como CPU y memoria) de los nodos y pods. Encontrarás el manifiesto en `metrics-server.yaml`. Aplícalo con `kubectl apply -f metrics-server.yaml`. El `metrics-server` se estudiará en mayor detalle más adelante.
+
 ### Pasos
-1. **Aplicar el HPA**:
+1. **Aplicar el Deployment de estrés**:
+   ```bash
+   kubectl apply -f manifests/autoscaling/stress-deployment.yaml
+   ```
+   **Explicación**: Se crea un Deployment que genera una carga de CPU constante.
+
+2. **Aplicar el HPA**:
    ```bash
    kubectl apply -f manifests/autoscaling/hpa.yaml
    ```
-   **Explicación**: Se crea un HPA que monitorea el uso de CPU del `nginx-deployment` y aumenta o disminuye el número de réplicas para mantener un promedio de 50% de utilización.
+   **Explicación**: Se crea un HPA que monitorea el uso de CPU del `stress-deployment` y aumenta o disminuye el número de réplicas para mantener un promedio de 50% de utilización.
 
-2. **Generar carga**:
-   Para generar carga, puede ejecutar un bucle `while` en un Pod de prueba.
+3. **Observar el escalado**:
+   Observe cómo el HPA crea nuevas réplicas con `kubectl get hpa -w`.
+
+4. **Desafío**: Ajuste el `averageUtilization` a `80` y observe cómo el HPA reacciona de manera diferente a la misma carga.
+
+5. **Limpieza**:
+   Para no dejar corriendo los pods que consumen CPU, elimina el deployment y el HPA.
    ```bash
-   kubectl run -it --rm load-generator --image=busybox /bin/sh
-   while true; do wget -q -O- http://nginx-service; done
+   kubectl delete deployment stress-deploy
+   kubectl delete hpa stress-hpa
    ```
-   Observe cómo el HPA crea nuevas réplicas con `kubectl get hpa`.
-
-3. **Desafío**: Ajuste el `averageUtilization` a `80` y observe cómo el HPA reacciona de manera diferente a la misma carga.
 
 ---
 
