@@ -412,11 +412,28 @@ Entender cómo controlar el acceso a la API de Kubernetes utilizando **ServiceAc
    - **Role**: `lector-pods-role` define permisos (en este caso, `get`, `watch`, `list` para Pods).
    - **RoleBinding**: `lector-pods-binding` asigna el Role a la ServiceAccount.
 
-2. **Usar la ServiceAccount**:
-   Intente listar Pods usando el token de la ServiceAccount.
-   **Explicación**: Esto demuestra cómo un proceso (o un usuario) puede autenticarse con permisos limitados.
+2. **Obtener el Token de la ServiceAccount**:
+   Para usar la ServiceAccount, necesitamos un token de autenticación. El siguiente comando lo genera y lo guarda en una variable de entorno.
+   ```bash
+   TOKEN=$(kubectl create token lector-pods)
+   ```
+   **Explicación**: `kubectl create token` es el comando moderno para generar un token para una ServiceAccount. Lo guardamos en la variable `TOKEN` para usarlo fácilmente.
 
-3. **Desafío**: Extienda el `Role` para permitir también la creación de Pods (`create`). Vuelva a probar los permisos.
+3. **Probar la acción permitida (Listar Pods)**:
+   Ahora, usamos el token para hacer una petición a la API como si fuéramos la ServiceAccount.
+   ```bash
+   kubectl get pods --token=$TOKEN
+   ```
+   **Explicación**: Este comando debería funcionar y listar los Pods, ya que el `Role` concede el permiso `get`.
+
+4. **Probar la acción denegada (Borrar un Pod)**:
+   Intentemos una acción que no está permitida, como borrar un Pod. Reemplace `nginx` con el nombre de un Pod existente.
+   ```bash
+   kubectl delete pod nginx --token=$TOKEN
+   ```
+   **Explicación**: Este comando **fallará** con un error `Forbidden`. Este error confirma que nuestro control de acceso está funcionando y la ServiceAccount no puede realizar acciones no autorizadas.
+
+5. **Desafío**: Extienda el `Role` para permitir también la creación de Pods (`create`). Vuelva a probar los permisos.
 
 ---
 
