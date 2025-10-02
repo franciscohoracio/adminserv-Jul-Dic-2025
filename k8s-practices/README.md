@@ -228,6 +228,8 @@ Aprender a configurar **Liveness Probes** y **Readiness Probes** para que Kubern
 ### Objetivo
 Aprender a exponer servicios HTTP y HTTPS fuera del clúster utilizando un **Ingress**, que actúa como un enrutador inteligente para las peticiones entrantes.
 
+**Nota:** Para que esta práctica funcione, es necesario instalar un `Ingress Controller` en el clúster. Este componente se encarga de gestionar los recursos Ingress y redirigir el tráfico externo a los servicios correspondientes. Encontrarás el manifiesto en `manifests/networking/ingress-nginx-controller.yaml`. Aplícalo con `kubectl apply -f manifests/networking/ingress-nginx-controller.yaml`.
+
 ### Pasos
 1. **Asegurarse de tener el Service**: Verifique que el `nginx-service` de la Práctica 2 esté en ejecución.
 2. **Aplicar el Ingress**:
