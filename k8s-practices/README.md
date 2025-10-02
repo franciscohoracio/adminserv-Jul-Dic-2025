@@ -41,11 +41,26 @@ Este repositorio contiene guías y manifiestos para realizar prácticas introduc
 Familiarizarse con la creación de un clúster de Kubernetes local y el despliegue de la unidad de trabajo más básica: el **Pod**.
 
 ### Pasos
-1. **Crear el clúster**:
-   ```bash
-   kind create cluster --name practicas-k8s
+1. **Crear el clúster con mapeo de puertos**:
+   Para acceder a los servicios `NodePort` desde tu máquina, es necesario mapear los puertos del nodo de Kind (un contenedor Docker) a tu `localhost`. Para ello, `kind` utiliza un archivo de configuración.
+
+   Asegúrate de tener el archivo `kind-config.yaml` en la raíz del proyecto con el siguiente contenido:
+   ```yaml
+   kind: Cluster
+   apiVersion: kind.x-k8s.io/v1alpha4
+   nodes:
+   - role: control-plane
+     extraPortMappings:
+     - containerPort: 30080
+       hostPort: 8080
+       protocol: TCP
    ```
-   **Explicación**: Este comando utiliza `kind` para crear un clúster de Kubernetes en su máquina local. El clúster se ejecuta dentro de contenedores de Docker, lo que simula un entorno real de múltiples nodos.
+
+   Ahora, crea el clúster con este archivo:
+   ```bash
+   kind create cluster --name practicas-k8s --config kind-config.yaml
+   ```
+   **Explicación**: `--config` le indica a `kind` que use nuestro archivo. `extraPortMappings` mapea el puerto `8080` de tu máquina (`hostPort`) al puerto `30080` del contenedor que funciona como nodo del clúster (`containerPort`).
 
 2. **Verificar los nodos**:
    ```bash
@@ -92,13 +107,13 @@ Aprender a gestionar aplicaciones con **Deployments** y a exponerlas con **Servi
    ```bash
    kubectl apply -f manifests/base/nginx-service.yaml
    ```
-   **Explicación**: Se crea un Service de tipo `NodePort`, que expone el Deployment en un puerto estático en cada nodo del clúster.
+   **Explicación**: Se crea un Service de tipo `NodePort`, que expone el Deployment en el puerto `30080` en el nodo del clúster.
 
 4. **Probar el acceso**:
     ```bash
-    curl http://localhost:30080
+    curl http://localhost:8080
     ```
-   **Explicación**: Se realiza una petición al Service. Kubernetes balanceará la carga entre los Pods del Deployment.
+   **Explicación**: Gracias al mapeo de puertos en la configuración de Kind, una petición a `localhost:8080` en tu máquina es redirigida al `NodePort` (`30080`) en el clúster, llegando al servicio de Nginx.
 
 5. **Desafío**: Escale el Deployment a 5 réplicas con `kubectl scale deployment nginx-deployment --replicas=5`. Verifique que se creen nuevos Pods.
 
