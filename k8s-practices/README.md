@@ -327,14 +327,14 @@ Aprender a controlar el flujo de tráfico entre Pods utilizando **NetworkPolicie
    **Explicación**: Esta política solo permite el tráfico entrante a los Pods con la etiqueta `app=nginx` si el tráfico proviene de Pods con la etiqueta `access=granted`.
 
 2. **Probar el acceso permitido**:
-   Cree un Pod con la etiqueta `access=granted` e intente acceder al `nginx-service`. La conexión funcionará.
+   Cree un Pod con la etiqueta `access=granted` e intente acceder al `nginx-service`. La conexión funcionará y mostrará el código HTML de la página de bienvenida de Nginx.
    ```bash
-   kubectl run busybox --image=busybox --labels=access=granted --rm -it -- wget --spider nginx-service
+   kubectl run busybox-allowed --image=busybox --labels=access=granted --rm -it -- wget -qO- --timeout=5 nginx-service
    ```
 
-3. **Desafío**: Intente acceder desde un Pod sin la etiqueta `access=granted`. La conexión será rechazada.
+3. **Desafío**: Intente acceder desde un Pod sin la etiqueta `access=granted`. La conexión será rechazada (el comando `wget` expirará).
    ```bash
-   kubectl run busybox --image=busybox --rm -it -- wget --spider nginx-service
+   kubectl run busybox-denied --image=busybox --rm -it -- wget -qO- --timeout=5 nginx-service
    ```
 
 ---
